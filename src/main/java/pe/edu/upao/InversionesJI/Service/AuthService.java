@@ -8,12 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pe.edu.upao.InversionesJI.Entity.Cliente;
+import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
 import pe.edu.upao.InversionesJI.Repository.ClienteRepository;
+import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
 import pe.edu.upao.InversionesJI.Request.LoginRequest;
 import pe.edu.upao.InversionesJI.Request.RegisterClienteRequest;
 import pe.edu.upao.InversionesJI.Response.AuthResponse;
+import pe.edu.upao.InversionesJI.Entity.Cliente;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final ClienteRepository clienteRepository;
+    private final InmobiliariaRepository inmobiliariaRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
@@ -47,6 +50,12 @@ public class AuthService {
         if (clienteOptional.isPresent()) {
             Cliente cliente = clienteOptional.get();
             return new User(cliente.getUsername(), cliente.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("Cliente")));
+        }
+
+        Optional<Inmobiliaria> inmobiliariaOptional = inmobiliariaRepository.findByUsername(correo);
+        if (inmobiliariaOptional.isPresent()) {
+            Inmobiliaria inmobiliaria = inmobiliariaOptional.get();
+            return new User(inmobiliaria.getUsername(), inmobiliaria.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("Inmobiliaria")));
         }
         throw new UsernameNotFoundException("Usuario no encontrado con correo: " + correo);
     }
