@@ -6,8 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Cliente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
+import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.ClienteRepository;
 import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
 
@@ -19,6 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private AgenteRepository agenteRepository;
 
     @Autowired
     private InmobiliariaRepository inmobiliariaRepository;
@@ -33,6 +38,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         Optional<Cliente> cliente = clienteRepository.findByUsername(username);
         if (cliente.isPresent()) {
             return cliente.get();
+        }
+
+        // Buscar en la entidad Agente
+        Optional<Agente> agente = agenteRepository.findByUsername(username);
+        if (agente.isPresent()) {
+            return agente.get();
         }
 
         // Buscar en la entidad Inmobiliaria

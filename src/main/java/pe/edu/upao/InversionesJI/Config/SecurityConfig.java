@@ -29,8 +29,9 @@ public class SecurityConfig {
                         authRequest
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/inmobiliaria/registrarInmobiliaria").permitAll()
-                                .requestMatchers("/cliente/**").hasAuthority("Cliente")
                                 .requestMatchers("/inmobiliaria/**").hasAuthority("Inmobiliaria")
+                                .requestMatchers("/cliente/**").hasAuthority("Cliente")
+                                .requestMatchers("/agente/**").hasAuthority("Agente")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManager ->
