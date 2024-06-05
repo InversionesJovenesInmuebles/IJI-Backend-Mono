@@ -7,7 +7,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
+import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
+import pe.edu.upao.InversionesJI.Request.RegisterAgenteRequest;
 import pe.edu.upao.InversionesJI.Request.RegisterInmobiliariaRequest;
 import pe.edu.upao.InversionesJI.Response.AuthResponse;
 import pe.edu.upao.InversionesJI.Service.InmobiliariaService;
@@ -28,10 +30,33 @@ public class InmobiliariaServiceTest {
     private JwtService jwtService;
 
     @Mock
-    private InmobiliariaRepository InmobiliariaRepository;
+    private AgenteRepository agenteRepository;
+
+    @Mock
+    private InmobiliariaRepository inmobiliariaRepository;
 
     @InjectMocks
     private InmobiliariaService inmobiliariaService;
+
+    @Test
+    public void testAgregarAgente() {
+        RegisterAgenteRequest request = new RegisterAgenteRequest();
+        request.setNombre("Mi");
+        request.setApellido("Palomita");
+        request.setCorreo("pruebita123@gmail.com");
+        request.setContrasena("012345");
+        request.setTelefono("929102837");
+        request.setDni("73940195");
+        request.setNombreInmobiliaria("Grupo CAPEX");
+
+        when(passwordEncoder.encode(anyString())).thenReturn("contraseñaEncriptada");
+        when(jwtService.getToken(any())).thenReturn("token");
+
+        AuthResponse response = inmobiliariaService.agregarAgente(request);
+
+        assertNotNull(response);
+        assertEquals("token", response.getToken());
+    }
 
     @Test
     public void testAgregarInmobiliaria() {

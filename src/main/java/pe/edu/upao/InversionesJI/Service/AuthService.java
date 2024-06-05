@@ -8,8 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
+import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.ClienteRepository;
 import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
 import pe.edu.upao.InversionesJI.Request.LoginRequest;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final ClienteRepository clienteRepository;
+    private final AgenteRepository agenteRepository;
     private final InmobiliariaRepository inmobiliariaRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -50,6 +53,12 @@ public class AuthService {
         if (clienteOptional.isPresent()) {
             Cliente cliente = clienteOptional.get();
             return new User(cliente.getUsername(), cliente.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("Cliente")));
+        }
+
+        Optional<Agente> agenteOptional = agenteRepository.findByUsername(correo);
+        if (agenteOptional.isPresent()) {
+            Agente agente = agenteOptional.get();
+            return new User(agente.getUsername(), agente.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("Agente")));
         }
 
         Optional<Inmobiliaria> inmobiliariaOptional = inmobiliariaRepository.findByUsername(correo);
