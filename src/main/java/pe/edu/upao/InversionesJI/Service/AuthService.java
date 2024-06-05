@@ -69,6 +69,7 @@ public class AuthService {
         throw new UsernameNotFoundException("Usuario no encontrado con correo: " + correo);
     }
 
+    //Método para registar al cliente
     public AuthResponse registerCliente(RegisterClienteRequest request){
         Cliente cliente = new Cliente();
         cliente.setUsername(request.getCorreo());
