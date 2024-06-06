@@ -75,6 +75,21 @@ public class AgenteService {
         propiedadRepository.save(casa);
     }
 
+    //Modificar datos de la casa
+    public void modificarCasa(Long id, CasaDto casaDto) {
+        Casa casa = (Casa) propiedadRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada con el ID: " + id));
+
+        casa = convertirPropiedad(casaDto, casa);
+        // Atributos específicos de Casa
+        casa.setSotano(casaDto.isSotano());
+        casa.setAreaJardin(casaDto.getAreaJardin());
+        casa.setAtico(casaDto.isAtico());
+        casa.setJardin(casaDto.isJardin());
+        casa.setCantPisos(casaDto.getCantPisos());
+        propiedadRepository.save(casa);
+    }
+
     //DEPARTAMENTO
 
     //Agregar Departamento
@@ -82,6 +97,22 @@ public class AgenteService {
         Departamento departamento = convertirPropiedad(departamentoDto, new Departamento());
 
         //Atributos de la propiedad departamento
+        departamento.setPisos(departamentoDto.getPisos());
+        departamento.setInterior(departamentoDto.getInterior());
+        departamento.setAscensor(departamentoDto.isAscensor());
+        departamento.setAreasComunes(departamentoDto.isAreasComunes());
+        departamento.setAreasComunesEspecificas(departamentoDto.getAreasComunesEspecificas());
+        propiedadRepository.save(departamento);
+    }
+
+    //Modificar datos del departamento
+    public void modificarDepartamento(Long id, DepartamentoDto departamentoDto) {
+        Departamento departamento = (Departamento) propiedadRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado con el ID: " + id));
+
+        departamento = convertirPropiedad(departamentoDto, departamento);
+
+        // Atributos específicos de Departamento
         departamento.setPisos(departamentoDto.getPisos());
         departamento.setInterior(departamentoDto.getInterior());
         departamento.setAscensor(departamentoDto.isAscensor());
