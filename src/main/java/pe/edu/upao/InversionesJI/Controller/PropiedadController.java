@@ -3,6 +3,7 @@ package pe.edu.upao.InversionesJI.Controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pe.edu.upao.InversionesJI.Entity.Propiedad;
@@ -22,5 +23,12 @@ public class PropiedadController {
     public ResponseEntity<List<Propiedad>> listarPropiedades() {
         List<Propiedad> propiedades = propiedadService.listarPropiedades();
         return ResponseEntity.ok(propiedades);
+    }
+
+    //Listar una propiedad por su ID
+    @GetMapping("/listarPropiedad/{id}")
+    public ResponseEntity<Propiedad> obtenerPropiedadPorId(@PathVariable Long id) {
+        Propiedad propiedad = propiedadService.obtenerPropiedadPorId(id);
+        return ResponseEntity.ok(propiedad);
     }
 }
