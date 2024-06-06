@@ -63,6 +63,26 @@ public class InmobiliariaService {
                 .build();
     }
 
+    //Modificar datos del agente
+    public Agente modificarAgente(Long id, RegisterAgenteRequest request) {
+        Agente agente = agenteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Agente no encontrado con el ID: " + id));
+
+        agente.setNombre(request.getNombre());
+        agente.setApellido(request.getApellido());
+        agente.setUsername(request.getCorreo());
+        agente.setDni(request.getDni());
+        agente.setTelefono(request.getTelefono());
+        agente.setNombreInmobiliaria(request.getNombreInmobiliaria());
+
+        if (request.getContrasena() != null && !request.getContrasena().isEmpty()) {
+            agente.setPassword(passwordEncoder.encode(request.getContrasena()));
+        }
+
+        agenteRepository.save(agente);
+        return agente;
+    }
+
     //Eliminar al agente
     public ResponseEntity<?> eliminarAgente(Long id) {
         Optional<Agente> agenteOptional = agenteRepository.findById(id);
