@@ -43,4 +43,9 @@ public class InmobiliariaService {
                 .token(jwtService.getToken(inmobiliaria))
                 .build();
     }
+
+    //Listar a todos los agentes
+    public List<Agente> listarAgentes() {
+        return agenteRepository.findAll();
+    }
 }
