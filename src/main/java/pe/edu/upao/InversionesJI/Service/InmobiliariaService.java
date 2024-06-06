@@ -1,6 +1,8 @@
 package pe.edu.upao.InversionesJI.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pe.edu.upao.InversionesJI.Entity.Agente;
@@ -13,6 +15,7 @@ import pe.edu.upao.InversionesJI.Request.RegisterInmobiliariaRequest;
 import pe.edu.upao.InversionesJI.Response.AuthResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -58,6 +61,18 @@ public class InmobiliariaService {
         return AuthResponse.builder()
                 .token(jwtService.getToken(agente))
                 .build();
+    }
+
+    //Eliminar al agente
+    public ResponseEntity<?> eliminarAgente(Long id) {
+        Optional<Agente> agenteOptional = agenteRepository.findById(id);
+        if (agenteOptional.isPresent()) {
+            Agente agente = agenteOptional.get();
+            agenteRepository.delete(agente);
+            return ResponseEntity.status(HttpStatus.OK).body("Agente eliminado");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El agente no se ha encontrado");
+        }
     }
 
     //Listar a todos los agentes
