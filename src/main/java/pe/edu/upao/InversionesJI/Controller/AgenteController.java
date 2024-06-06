@@ -1,6 +1,7 @@
 package pe.edu.upao.InversionesJI.Controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upao.InversionesJI.Dto.CasaDto;
@@ -27,6 +28,13 @@ public class AgenteController {
         }
     }
 
+    // Modificar datos de la casa
+    @PutMapping("/modificarCasa/{id}")
+    public ResponseEntity<Void> modificarCasa(@PathVariable Long id, @RequestBody CasaDto casaDto) {
+        agenteService.modificarCasa(id, casaDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     //DEPARTAMENTO
 
     //Agregar un departamento
@@ -38,5 +46,12 @@ public class AgenteController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // Modificar Departamento
+    @PutMapping("/modificarDepartamento/{id}")
+    public ResponseEntity<Void> modificarDepartamento(@PathVariable Long id, @RequestBody DepartamentoDto departamentoDto) {
+        agenteService.modificarDepartamento(id, departamentoDto);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
