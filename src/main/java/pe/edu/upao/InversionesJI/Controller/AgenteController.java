@@ -35,6 +35,17 @@ public class AgenteController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    //Elimianr una casa
+    @DeleteMapping("/eliminarCasa/{id}")
+    public ResponseEntity<String> eliminarCasa(@PathVariable Long id) {
+        try {
+            agenteService.eliminarCasa(id);
+            return ResponseEntity.ok("Casa eliminada correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     //DEPARTAMENTO
 
     //Agregar un departamento
@@ -53,5 +64,16 @@ public class AgenteController {
     public ResponseEntity<Void> modificarDepartamento(@PathVariable Long id, @RequestBody DepartamentoDto departamentoDto) {
         agenteService.modificarDepartamento(id, departamentoDto);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    //Eliminar los datos del departamento
+    @DeleteMapping("/eliminarDepartamento/{id}")
+    public ResponseEntity<String> eliminarDepartamento(@PathVariable Long id) {
+        try {
+            agenteService.eliminarDepartamento(id);
+            return ResponseEntity.ok("Departamento eliminado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

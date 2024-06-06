@@ -90,6 +90,13 @@ public class AgenteService {
         propiedadRepository.save(casa);
     }
 
+    //Eliminar la casa del repositorio
+    public void eliminarCasa(Long id) {
+        Casa casa = (Casa) propiedadRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada"));
+        propiedadRepository.delete(casa);
+    }
+
     //DEPARTAMENTO
 
     //Agregar Departamento
@@ -119,5 +126,12 @@ public class AgenteService {
         departamento.setAreasComunes(departamentoDto.isAreasComunes());
         departamento.setAreasComunesEspecificas(departamentoDto.getAreasComunesEspecificas());
         propiedadRepository.save(departamento);
+    }
+
+    //Eliminar el departamento del repositorio
+    public void eliminarDepartamento(Long id) {
+        Departamento departamento = (Departamento) propiedadRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado"));
+        propiedadRepository.delete(departamento);
     }
 }
