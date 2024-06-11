@@ -9,5 +9,6 @@ import java.util.Optional;
 @Repository
 public interface InmobiliariaRepository extends JpaRepository<Inmobiliaria, Long> {
     Optional<Inmobiliaria> findByUsername(String correo);
+    Optional<Inmobiliaria> findByNombreInmobiliaria(String nombreInmobiliaria);
 
 }

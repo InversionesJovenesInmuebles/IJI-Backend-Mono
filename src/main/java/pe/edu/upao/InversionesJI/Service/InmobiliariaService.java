@@ -3,6 +3,7 @@ package pe.edu.upao.InversionesJI.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pe.edu.upao.InversionesJI.Entity.Agente;
@@ -39,18 +40,32 @@ public class InmobiliariaService {
         inmobiliaria.setDireccion(request.getDireccion());
         inmobiliariaRepository.save(inmobiliaria);
 
+        String token = jwtService.getToken(inmobiliaria);
         return AuthResponse.builder()
-                .token(jwtService.getToken(inmobiliaria))
+                .token(token)
+                .role("Inmobiliaria")
                 .build();
+    }
+
+    public List<Agente> listarAgentesInmobiliaria(String nombreInmobiliaria) {
+        return agenteRepository.findByNombreInmobiliaria(nombreInmobiliaria);
     }
 
     //Agregar a un agente
     public AuthResponse agregarAgente(RegisterAgenteRequest request) {
         System.out.println("Solicitud para agregar agentes recibida: " + request);
+
+        // Buscar la inmobiliaria por nombre
+        Inmobiliaria inmobiliaria;
+        inmobiliaria = inmobiliariaRepository.findByNombreInmobiliaria(request.getNombreInmobiliaria())
+                .orElseThrow(() -> new UsernameNotFoundException("Inmobiliaria no encontrada"));
+
         Agente agente = new Agente();
         agente.setNombre(request.getNombre());
         agente.setApellido(request.getApellido());
         agente.setRole("Agente");
+        agente.setInmobiliaria(inmobiliaria);
+        inmobiliaria.addAgente(agente);
         agente.setUsername(request.getCorreo());
         agente.setPassword(passwordEncoder.encode(request.getContrasena()));
         agente.setDni(request.getDni());
@@ -58,8 +73,10 @@ public class InmobiliariaService {
         agente.setNombreInmobiliaria(request.getNombreInmobiliaria());
         agenteRepository.save(agente);
 
+        String token = jwtService.getToken(agente);
         return AuthResponse.builder()
-                .token(jwtService.getToken(agente))
+                .token(token)
+                .role("Agente")
                 .build();
     }
 

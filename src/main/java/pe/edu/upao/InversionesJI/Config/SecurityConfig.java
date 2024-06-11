@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authRequest ->
                         authRequest
                                 .requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/propiedad/**").permitAll()
                                 .requestMatchers("/inmobiliaria/registrarInmobiliaria").permitAll()
                                 .requestMatchers("/inmobiliaria/**").hasAuthority("Inmobiliaria")
                                 .requestMatchers("/cliente/**").hasAuthority("Cliente")

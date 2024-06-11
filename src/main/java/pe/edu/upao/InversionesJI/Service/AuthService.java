@@ -41,8 +41,12 @@ public class AuthService {
 
             // Generar token y devolver respuesta de autenticación
             String token = jwtService.getToken(userDetails);
+            String role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
 
-            return new AuthResponse(token);
+            return AuthResponse.builder()
+                    .token(token)
+                    .role(role)
+                    .build();
         } else {
             throw new BadCredentialsException("Credenciales incorrectas para el usuario: " + request.getCorreo());
         }
@@ -81,8 +85,10 @@ public class AuthService {
         cliente.setTelefono(request.getTelefono());
         clienteRepository.save(cliente);
 
+        String token = jwtService.getToken(cliente);
         return AuthResponse.builder()
-                .token(jwtService.getToken(cliente))
+                .token(token)
+                .role("Cliente")
                 .build();
     }
 }

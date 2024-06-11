@@ -17,7 +17,8 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Propiedad {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "propiedad_seq")
+    @SequenceGenerator(name = "propiedad_seq", sequenceName = "propiedad_sequence", allocationSize = 1)
     private Long idPropiedad;
 
     //Dirección de las propiedades

@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,7 +21,8 @@ import java.util.List;
 public class Inmobiliaria implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inmobiliaria_seq")
+    @SequenceGenerator(name = "inmobiliaria_seq", sequenceName = "inmobiliaria_sequence", allocationSize = 1)
     private Long idInmobiliaria;
     private String nombreInmobiliaria;
     private String direccion;
@@ -53,5 +55,20 @@ public class Inmobiliaria implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @OneToMany(mappedBy = "inmobiliaria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Agente> agentes = new ArrayList<>();
+
+    // Add agent to list
+    public void addAgente(Agente agente) {
+        agentes.add(agente);
+        agente.setInmobiliaria(this);
+    }
+
+    // Remove agent from list
+    public void removeAgente(Agente agente) {
+        agentes.remove(agente);
+        agente.setInmobiliaria(null);
     }
 }

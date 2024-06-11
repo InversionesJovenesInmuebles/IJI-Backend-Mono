@@ -30,5 +30,15 @@ public class CasaDto extends PropiedadDto{
     @NotNull
     private boolean sotano;
 
-    private List<FotoDto> fotos;
+    private List<String> fotosUrls;
+
+    public CasaDto(String latitud, String longitud, String pais, String region, String provincia, String distrito, String direccion, String descripcion, String otrasComodidades, String tipoPropiedad, double areaTerreno, double costoTotal, double costoInicial, boolean cochera, int cantBanos, int cantDormitorios, int cantCochera, boolean sotano, double areaJardin, boolean atico, boolean jardin, int cantPisos, List<String> fotosUrls) {
+        super(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera);
+        this.sotano = sotano;
+        this.areaJardin = (int) areaJardin;
+        this.atico = atico;
+        this.jardin = jardin;
+        this.cantPisos = cantPisos;
+        this.fotosUrls = fotosUrls;
+    }
 }

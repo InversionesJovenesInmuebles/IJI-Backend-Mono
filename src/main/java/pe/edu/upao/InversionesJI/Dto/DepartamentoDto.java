@@ -31,5 +31,15 @@ public class DepartamentoDto extends PropiedadDto{
     @NotBlank(message = "Las áreas comunes no debe estar en blanco")
     private String areasComunesEspecificas;
 
-    private List<FotoDto> fotos;
+    private List<String> fotosUrls;
+
+    public DepartamentoDto(String latitud, String longitud, String pais, String region, String provincia, String distrito, String direccion, String descripcion, String otrasComodidades, String tipoPropiedad, double areaTerreno, double costoTotal, double costoInicial, boolean cochera, int cantBanos, int cantDormitorios, int cantCochera, int pisos, int interior, boolean ascensor, boolean areasComunes, String areasComunesEspecificas, List<String> fotosUrls) {
+        super(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera);
+        this.pisos = pisos;
+        this.interior = interior;
+        this.ascensor = ascensor;
+        this.areasComunes = areasComunes;
+        this.areasComunesEspecificas = areasComunesEspecificas;
+        this.fotosUrls = fotosUrls;
+    }
 }

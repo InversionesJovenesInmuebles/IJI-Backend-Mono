@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pe.edu.upao.InversionesJI.Dto.CasaDto;
 import pe.edu.upao.InversionesJI.Dto.DepartamentoDto;
-import pe.edu.upao.InversionesJI.Dto.FotoDto;
 import pe.edu.upao.InversionesJI.Dto.PropiedadDto;
 import pe.edu.upao.InversionesJI.Entity.Casa;
 import pe.edu.upao.InversionesJI.Entity.Departamento;
@@ -42,18 +41,18 @@ public class AgenteService {
         propiedad.setCantCochera(propiedadDto.getCantCochera());
 
         // Asignar fotos
-        List<Foto> fotos = convertirFotos(propiedadDto.getFotos(), propiedad);
+        List<Foto> fotos = convertirFotos(propiedadDto.getFotosUrls(), propiedad);
         propiedad.setFotos(fotos);
 
         return propiedad;
     }
 
-    //Lista de fotos para las propiedades
-    private List<Foto> convertirFotos(List<FotoDto> fotosDto, Propiedad propiedad) {
-        return fotosDto.stream()
-                .map(fotoDto -> {
+    // Lista de fotos para las propiedades
+    private List<Foto> convertirFotos(List<String> fotosUrls, Propiedad propiedad) {
+        return fotosUrls.stream()
+                .map(fotoUrl -> {
                     Foto foto = new Foto();
-                    foto.setNombreFoto(fotoDto.getNombreFoto());
+                    foto.setNombreFoto(fotoUrl);
                     foto.setPropiedad(propiedad);
                     return foto;
                 })
@@ -62,7 +61,7 @@ public class AgenteService {
 
     //CASA
 
-    //Agregar Casa
+    // Agregar Casa
     public void agregarCasa(CasaDto casaDto) {
         Casa casa = convertirPropiedad(casaDto, new Casa());
 
@@ -80,7 +79,6 @@ public class AgenteService {
         Casa casa = (Casa) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada con el ID: " + id));
 
-        casa = convertirPropiedad(casaDto, casa);
         // Atributos específicos de Casa
         casa.setSotano(casaDto.isSotano());
         casa.setAreaJardin(casaDto.getAreaJardin());
@@ -99,7 +97,7 @@ public class AgenteService {
 
     //DEPARTAMENTO
 
-    //Agregar Departamento
+    // Agregar Departamento
     public void agregarDepartamento(DepartamentoDto departamentoDto) {
         Departamento departamento = convertirPropiedad(departamentoDto, new Departamento());
 
@@ -116,8 +114,6 @@ public class AgenteService {
     public void modificarDepartamento(Long id, DepartamentoDto departamentoDto) {
         Departamento departamento = (Departamento) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado con el ID: " + id));
-
-        departamento = convertirPropiedad(departamentoDto, departamento);
 
         // Atributos específicos de Departamento
         departamento.setPisos(departamentoDto.getPisos());

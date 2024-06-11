@@ -2,11 +2,15 @@ package pe.edu.upao.InversionesJI.Dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PropiedadDto {
 
     //Dirección de las propiedades
@@ -78,6 +82,26 @@ public class PropiedadDto {
     @NotNull
     @NotBlank(message = "La cantidad de cocheras no debe estar en blanco")
     private int cantCochera;
-    
-    private List<FotoDto> fotos;
+
+    List<String>fotosUrls;
+
+    public PropiedadDto(String latitud, String longitud, String pais, String region, String provincia, String distrito, String direccion, String descripcion, String otrasComodidades, String tipoPropiedad, double areaTerreno, double costoTotal, double costoInicial, boolean cochera, int cantBanos, int cantDormitorios, int cantCochera) {
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.pais = pais;
+        this.region = region;
+        this.provincia = provincia;
+        this.distrito = distrito;
+        this.direccion = direccion;
+        this.descripcion = descripcion;
+        this.otrasComodidades = otrasComodidades;
+        this.tipoPropiedad = tipoPropiedad;
+        this.areaTerreno = areaTerreno;
+        this.costoTotal = costoTotal;
+        this.costoInicial = costoInicial;
+        this.cochera = cochera;
+        this.cantBanos = cantBanos;
+        this.cantDormitorios = cantDormitorios;
+        this.cantCochera = cantCochera;
+    }
 }

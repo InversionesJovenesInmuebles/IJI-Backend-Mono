@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue("Foto")
 public class Foto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "foto_seq")
+    @SequenceGenerator(name = "foto_seq", sequenceName = "foto_sequence", allocationSize = 1)
     private Long idFoto;
 
     private String nombreFoto;

@@ -32,6 +32,13 @@ public class InmobiliariaController {
         return ResponseEntity.ok(inmobiliariaService.agregarAgente(request));
     }
 
+    //Listar agentes por inmobiliaria
+    @GetMapping("/listarAgentes/{nombreInmobiliaria}")
+    public ResponseEntity<List<Agente>> listarAgentesInmobiliaria(@PathVariable String nombreInmobiliaria) {
+        List<Agente> agentes = inmobiliariaService.listarAgentesInmobiliaria(nombreInmobiliaria);
+        return ResponseEntity.ok(agentes);
+    }
+
     //Modificar agente
     @PutMapping("/modificarAgente/{id}")
     public ResponseEntity<Agente> modificarAgente(@PathVariable Long id, @RequestBody RegisterAgenteRequest request) {

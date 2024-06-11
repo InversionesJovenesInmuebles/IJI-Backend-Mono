@@ -28,10 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private InmobiliariaRepository inmobiliariaRepository;
 
-    public CustomUserDetailsService(InmobiliariaRepository inmobiliariaRepository) {
-        this.inmobiliariaRepository = inmobiliariaRepository;
-    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Buscar en la entidad Cliente
