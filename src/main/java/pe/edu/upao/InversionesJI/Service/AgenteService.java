@@ -2,14 +2,15 @@ package pe.edu.upao.InversionesJI.Service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Dto.CasaDto;
 import pe.edu.upao.InversionesJI.Dto.DepartamentoDto;
 import pe.edu.upao.InversionesJI.Dto.PropiedadDto;
-import pe.edu.upao.InversionesJI.Entity.Casa;
-import pe.edu.upao.InversionesJI.Entity.Departamento;
-import pe.edu.upao.InversionesJI.Entity.Foto;
-import pe.edu.upao.InversionesJI.Entity.Propiedad;
-import pe.edu.upao.InversionesJI.Repository.PropiedadRepository;
+import pe.edu.upao.InversionesJI.MicroServiceEntity.Casa;
+import pe.edu.upao.InversionesJI.MicroServiceEntity.Departamento;
+import pe.edu.upao.InversionesJI.MicroServiceEntity.Foto;
+import pe.edu.upao.InversionesJI.MicroServiceEntity.Propiedad;
+import pe.edu.upao.InversionesJI.MicroServiceRepository.PropiedadRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ public class AgenteService {
     //CASA
 
     // Agregar Casa
+    @Transactional("propiedadTransactionManager")
     public void agregarCasa(CasaDto casaDto) {
         Casa casa = convertirPropiedad(casaDto, new Casa());
 
@@ -75,6 +77,7 @@ public class AgenteService {
     }
 
     //Modificar datos de la casa
+    @Transactional("propiedadTransactionManager")
     public void modificarCasa(Long id, CasaDto casaDto) {
         Casa casa = (Casa) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada con el ID: " + id));
@@ -89,6 +92,7 @@ public class AgenteService {
     }
 
     //Eliminar la casa del repositorio
+    @Transactional("propiedadTransactionManager")
     public void eliminarCasa(Long id) {
         Casa casa = (Casa) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada"));
@@ -98,6 +102,7 @@ public class AgenteService {
     //DEPARTAMENTO
 
     // Agregar Departamento
+    @Transactional("propiedadTransactionManager")
     public void agregarDepartamento(DepartamentoDto departamentoDto) {
         Departamento departamento = convertirPropiedad(departamentoDto, new Departamento());
 
@@ -111,6 +116,7 @@ public class AgenteService {
     }
 
     //Modificar datos del departamento
+    @Transactional("propiedadTransactionManager")
     public void modificarDepartamento(Long id, DepartamentoDto departamentoDto) {
         Departamento departamento = (Departamento) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado con el ID: " + id));
@@ -125,6 +131,7 @@ public class AgenteService {
     }
 
     //Eliminar el departamento del repositorio
+    @Transactional("propiedadTransactionManager")
     public void eliminarDepartamento(Long id) {
         Departamento departamento = (Departamento) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado"));

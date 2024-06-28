@@ -21,12 +21,25 @@ public class Cliente implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
     @SequenceGenerator(name = "cliente_seq", sequenceName = "cliente_sequence", allocationSize = 1)
     private Long id;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "apellido")
     private String apellido;
+
+    @Column(name = "contrasena")
     private String password;
+
+    @Column(name = "correo")
     private String username;
+
+    @Column(name = "telefono")
     private String telefono;
+
+    @Column(name = "dni")
     private String dni;
+
     private String role;
 
     @Override

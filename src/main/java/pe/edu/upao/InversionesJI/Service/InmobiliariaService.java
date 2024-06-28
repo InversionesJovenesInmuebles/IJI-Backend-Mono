@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
@@ -28,6 +29,7 @@ public class InmobiliariaService {
     private final JwtService jwtService;
 
     //Agregar Inmobiliaria
+    @Transactional("monolitoTransactionManager")
     public AuthResponse agregarInmobiliaria(RegisterInmobiliariaRequest request) {
         System.out.println("Solicitud para agregar inmobiliaria recibida: " + request);
         Inmobiliaria inmobiliaria = new Inmobiliaria();
@@ -47,11 +49,32 @@ public class InmobiliariaService {
                 .build();
     }
 
+    public Inmobiliaria obtenerInmobiliariaPorToken(String token) {
+        String correo = jwtService.getUsernameFromToken(token);
+        return inmobiliariaRepository.findByUsername(correo)
+                .orElseThrow(() -> new RuntimeException("Inmobiliaria no encontrada para el token proporcionado"));
+    }
+
+    //AGENTE
+
+    //Listar agentes por inmobiliaria
     public List<Agente> listarAgentesInmobiliaria(String nombreInmobiliaria) {
         return agenteRepository.findByNombreInmobiliaria(nombreInmobiliaria);
     }
 
+    //Listar a todos los agentes
+    public List<Agente> listarAgentes() {
+        return agenteRepository.findAll();
+    }
+
+    // Obtener agente por ID
+    public Agente obtenerAgentePorId(Long id) {
+        return agenteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Agente no encontrado con el ID: "+ id));
+    }
+
     //Agregar a un agente
+    @Transactional("monolitoTransactionManager")
     public AuthResponse agregarAgente(RegisterAgenteRequest request) {
         System.out.println("Solicitud para agregar agentes recibida: " + request);
 
@@ -81,6 +104,7 @@ public class InmobiliariaService {
     }
 
     //Modificar datos del agente
+    @Transactional("monolitoTransactionManager")
     public Agente modificarAgente(Long id, RegisterAgenteRequest request) {
         Agente agente = agenteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Agente no encontrado con el ID: " + id));
@@ -101,6 +125,7 @@ public class InmobiliariaService {
     }
 
     //Eliminar al agente
+    @Transactional("monolitoTransactionManager")
     public ResponseEntity<?> eliminarAgente(Long id) {
         Optional<Agente> agenteOptional = agenteRepository.findById(id);
         if (agenteOptional.isPresent()) {
@@ -110,10 +135,5 @@ public class InmobiliariaService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El agente no se ha encontrado");
         }
-    }
-
-    //Listar a todos los agentes
-    public List<Agente> listarAgentes() {
-        return agenteRepository.findAll();
     }
 }

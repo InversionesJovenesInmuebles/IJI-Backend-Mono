@@ -1,5 +1,6 @@
 package pe.edu.upao.InversionesJI.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,13 +24,27 @@ public class Inmobiliaria implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "inmobiliaria_seq")
     @SequenceGenerator(name = "inmobiliaria_seq", sequenceName = "inmobiliaria_sequence", allocationSize = 1)
+    @Column(name = "id_inmobiliaria")
     private Long idInmobiliaria;
+
+    @Column(name = "nombre_inmobiliaria")
     private String nombreInmobiliaria;
+
+    @Column(name = "direccion")
     private String direccion;
+
+    @Column(name = "correo")
     private String username;
+
+    @Column(name = "contrasena")
     private String password;
+
+    @Column(name = "ruc")
     private String ruc;
+
+    @Column(name = "telefono_contacto")
     private String telefonoContacto;
+
     private String role;
 
     @Override
@@ -58,17 +73,12 @@ public class Inmobiliaria implements UserDetails {
     }
 
     @OneToMany(mappedBy = "inmobiliaria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Agente> agentes = new ArrayList<>();
 
     // Add agent to list
     public void addAgente(Agente agente) {
         agentes.add(agente);
         agente.setInmobiliaria(this);
-    }
-
-    // Remove agent from list
-    public void removeAgente(Agente agente) {
-        agentes.remove(agente);
-        agente.setInmobiliaria(null);
     }
 }

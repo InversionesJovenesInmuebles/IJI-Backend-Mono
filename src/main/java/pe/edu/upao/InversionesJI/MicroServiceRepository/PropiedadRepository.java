@@ -1,8 +1,8 @@
-package pe.edu.upao.InversionesJI.Repository;
+package pe.edu.upao.InversionesJI.MicroServiceRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pe.edu.upao.InversionesJI.Entity.Propiedad;
+import pe.edu.upao.InversionesJI.MicroServiceEntity.Propiedad;
 
 import java.util.Optional;
 

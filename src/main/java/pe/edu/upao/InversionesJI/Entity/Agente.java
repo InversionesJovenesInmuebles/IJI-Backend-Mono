@@ -1,5 +1,6 @@
 package pe.edu.upao.InversionesJI.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,14 +22,29 @@ public class Agente implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agente_seq")
     @SequenceGenerator(name = "agente_seq", sequenceName = "agente_sequence", allocationSize = 1)
     private Long id;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "apellido")
     private String apellido;
+
+    @Column(name = "contrasena")
     private String password;
+
+    @Column(name = "correo")
     private String username;
+
+    @Column(name = "telefono")
     private String telefono;
+
+    @Column(name = "dni")
     private String dni;
-    private String role;
+
+    @Column(name = "nombre_inmobiliaria")
     private String nombreInmobiliaria;
+
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -55,7 +71,8 @@ public class Agente implements UserDetails {
         return true;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_Inmobiliaria")
+    @ManyToOne
+    @JoinColumn(name = "id_inmobiliaria")
+    @JsonBackReference
     private Inmobiliaria inmobiliaria;
 }

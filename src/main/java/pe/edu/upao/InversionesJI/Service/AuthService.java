@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
@@ -32,6 +33,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional("monolitoTransactionManager")
     public AuthResponse login(LoginRequest request) {
         System.out.println("Intento de inicio de sesión para el usuario: " + request.getCorreo());
         UserDetails userDetails = loadUserByUsername(request.getCorreo());
@@ -74,6 +76,7 @@ public class AuthService {
     }
 
     //Método para registar al cliente
+    @Transactional("monolitoTransactionManager")
     public AuthResponse registerCliente(RegisterClienteRequest request){
         Cliente cliente = new Cliente();
         cliente.setUsername(request.getCorreo());
