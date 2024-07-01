@@ -20,10 +20,23 @@ public class JwtService {
     private static final String SECRET_KEY="586E3272357538782F413F4428472B4B6250655368566B597033733676397924";
 
     public String getToken(UserDetails user) {
-        return getToken(new HashMap<>(), user);
+        return buildToken(new HashMap<>(), user);
     }
 
-    private String getToken(Map<String,Object> extraClaims, UserDetails user) {
+    // Método para generar un token JWT con roles, ID de agente y otros claims adicionales
+    public String getTokenAgente(UserDetails user, Long idAgente) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("idAgente", idAgente);
+        return buildToken(claims, user);
+    }
+
+    // Método para obtener el ID del agente desde el token JWT
+    public Long getIdAgenteFromToken(String token) {
+        Claims claims = getAllClaims(token);
+        return claims.get("idAgente", Long.class);
+    }
+
+    private String buildToken(Map<String,Object> extraClaims, UserDetails user) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

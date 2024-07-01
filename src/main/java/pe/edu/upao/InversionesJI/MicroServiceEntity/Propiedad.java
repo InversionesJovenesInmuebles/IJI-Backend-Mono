@@ -78,6 +78,9 @@ public class Propiedad {
     @Column(name = "cant_cochera")
     private int cantCochera;
 
+    @Column(name = "id_agente")
+    private Long idAgente;
+
     @OneToMany(mappedBy = "propiedad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Foto> fotos;

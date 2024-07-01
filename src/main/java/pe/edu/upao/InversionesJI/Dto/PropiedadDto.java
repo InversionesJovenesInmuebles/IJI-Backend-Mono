@@ -85,7 +85,9 @@ public class PropiedadDto {
 
     List<String>fotosUrls;
 
-    public PropiedadDto(String latitud, String longitud, String pais, String region, String provincia, String distrito, String direccion, String descripcion, String otrasComodidades, String tipoPropiedad, double areaTerreno, double costoTotal, double costoInicial, boolean cochera, int cantBanos, int cantDormitorios, int cantCochera) {
+    private Long idAgente;
+
+    public PropiedadDto(String latitud, String longitud, String pais, String region, String provincia, String distrito, String direccion, String descripcion, String otrasComodidades, String tipoPropiedad, double areaTerreno, double costoTotal, double costoInicial, boolean cochera, int cantBanos, int cantDormitorios, int cantCochera, Long idAgente) {
         this.latitud = latitud;
         this.longitud = longitud;
         this.pais = pais;
@@ -103,5 +105,6 @@ public class PropiedadDto {
         this.cantBanos = cantBanos;
         this.cantDormitorios = cantDormitorios;
         this.cantCochera = cantCochera;
+        this.idAgente = idAgente;
     }
 }

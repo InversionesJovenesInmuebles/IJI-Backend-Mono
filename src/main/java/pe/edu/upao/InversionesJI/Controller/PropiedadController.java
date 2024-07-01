@@ -1,6 +1,7 @@
 package pe.edu.upao.InversionesJI.Controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,5 +31,15 @@ public class PropiedadController {
     public ResponseEntity<PropiedadDto> obtenerPropiedadPorId(@PathVariable Long id) {
         PropiedadDto propiedad = propiedadFeignClient.obtenerPropiedadPorId(id);
         return ResponseEntity.ok(propiedad);
+    }
+
+    //Listar propiedades en base al id del agente
+    @GetMapping("/listarPropiedadesAgente/{idAgente}")
+    public ResponseEntity<List<PropiedadDto>> listarPropiedadesAgente(@PathVariable Long idAgente) {
+        List<PropiedadDto> propiedad = propiedadFeignClient.listarPropiedadesPorAgente(idAgente);
+        if (propiedad.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(propiedad, HttpStatus.OK);
     }
 }

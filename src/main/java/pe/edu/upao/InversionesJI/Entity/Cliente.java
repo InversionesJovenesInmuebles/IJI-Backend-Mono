@@ -20,7 +20,8 @@ public class Cliente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cliente_seq")
     @SequenceGenerator(name = "cliente_seq", sequenceName = "cliente_sequence", allocationSize = 1)
-    private Long id;
+    @Column(name = "id_cliente")
+    private Long idCliente;
 
     @Column(name = "nombre")
     private String nombre;

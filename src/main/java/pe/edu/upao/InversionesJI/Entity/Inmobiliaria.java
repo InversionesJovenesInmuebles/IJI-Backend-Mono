@@ -47,6 +47,9 @@ public class Inmobiliaria implements UserDetails {
 
     private String role;
 
+    @Column(name = "id_agente")
+    private Long idAgente;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));

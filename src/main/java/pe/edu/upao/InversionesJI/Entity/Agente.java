@@ -21,7 +21,8 @@ public class Agente implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "agente_seq")
     @SequenceGenerator(name = "agente_seq", sequenceName = "agente_sequence", allocationSize = 1)
-    private Long id;
+    @Column(name = "id_agente")
+    private Long idAgente;
 
     @Column(name = "nombre")
     private String nombre;

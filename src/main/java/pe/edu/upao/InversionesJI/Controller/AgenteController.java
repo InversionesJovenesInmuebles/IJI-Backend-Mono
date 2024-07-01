@@ -1,11 +1,15 @@
 package pe.edu.upao.InversionesJI.Controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pe.edu.upao.InversionesJI.Dto.CasaDto;
 import pe.edu.upao.InversionesJI.Dto.DepartamentoDto;
+import pe.edu.upao.InversionesJI.Entity.Agente;
+import pe.edu.upao.InversionesJI.Jwt.JwtService;
 import pe.edu.upao.InversionesJI.Service.AgenteService;
 import pe.edu.upao.InversionesJI.Storage.StorageService;
 
@@ -19,6 +23,15 @@ public class AgenteController {
 
     private final AgenteService agenteService;
     private final StorageService storageService;
+    private final JwtService jwtService;
+
+    //Listar datos del agente por token
+    @GetMapping("/listarAgenteToken")
+    public ResponseEntity<Agente> obtenerDatosAgente(@RequestHeader("Authorization") String token) {
+        String tokenSinBearer = token.replace("Bearer ", "");
+        Agente agente = agenteService.obtenerAgentePorToken(tokenSinBearer);
+        return ResponseEntity.ok(agente);
+    }
 
     //CASA
 
@@ -47,16 +60,27 @@ public class AgenteController {
             @RequestParam("atico") boolean atico,
             @RequestParam("jardin") boolean jardin,
             @RequestParam("cantPisos") int cantPisos,
-            @RequestParam("fotos") List<MultipartFile> fotos) {
+            @RequestParam("fotos") List<MultipartFile> fotos,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+        // Obtener el token JWT desde el encabezado de autorización
+        String token = authorizationHeader.substring(7); // Remueve "Bearer " del encabezado
+
+        // Obtener el ID del agente desde el token JWT
+        Long idAgente = jwtService.getIdAgenteFromToken(token);
 
         // Subir las fotos y obtener las URLs
         List<String> fotoUrls = fotos.stream()
                 .map(storageService::store)
+                .map(filename -> ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/fotos/")
+                        .path(filename)
+                        .toUriString())
                 .collect(Collectors.toList());
 
         // Crear y guardar la casa usando las URLs de las fotos
-        CasaDto casaDto = new CasaDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, sotano, areaJardin, atico, jardin, cantPisos, fotoUrls);
-        agenteService.agregarCasa(casaDto);
+        CasaDto casaDto = new CasaDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, sotano, areaJardin, atico, jardin, cantPisos, fotoUrls, idAgente);
+        agenteService.agregarCasa(casaDto, token);
         return ResponseEntity.ok("Casa agregada con éxito");
     }
 
@@ -86,15 +110,26 @@ public class AgenteController {
             @RequestParam("atico") boolean atico,
             @RequestParam("jardin") boolean jardin,
             @RequestParam("cantPisos") int cantPisos,
-            @RequestParam("fotos") List<MultipartFile> fotos) {
+            @RequestParam("fotos") List<MultipartFile> fotos,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+        // Obtener el token JWT desde el encabezado de autorización
+        String token = authorizationHeader.substring(7); // Remueve "Bearer " del encabezado
+
+        // Obtener el ID del agente desde el token JWT
+        Long idAgente = jwtService.getIdAgenteFromToken(token);
 
         // Subir las fotos y obtener las URLs
         List<String> fotoUrls = fotos.stream()
                 .map(storageService::store)
+                .map(filename -> ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/fotos/")
+                        .path(filename)
+                        .toUriString())
                 .collect(Collectors.toList());
 
         // Crear y modificar la casa usando las URLs de las fotos
-        CasaDto casaDto = new CasaDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, sotano, areaJardin, atico, jardin, cantPisos, fotoUrls);
+        CasaDto casaDto = new CasaDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, sotano, areaJardin, atico, jardin, cantPisos, fotoUrls, idAgente);
         agenteService.modificarCasa(id, casaDto);
         return ResponseEntity.ok("Casa modificada con éxito");
     }
@@ -137,15 +172,26 @@ public class AgenteController {
             @RequestParam("ascensor") boolean ascensor,
             @RequestParam("areasComunes") boolean areasComunes,
             @RequestParam("areasComunesEspecificas") String areasComunesEspecificas,
-            @RequestParam("fotos") List<MultipartFile> fotos) {
+            @RequestParam("fotos") List<MultipartFile> fotos,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+        // Obtener el token JWT desde el encabezado de autorización
+        String token = authorizationHeader.substring(7); // Remueve "Bearer " del encabezado
+
+        // Obtener el ID del agente desde el token JWT
+        Long idAgente = jwtService.getIdAgenteFromToken(token);
 
         // Subir las fotos y obtener las URLs
         List<String> fotoUrls = fotos.stream()
                 .map(storageService::store)
+                .map(filename -> ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/fotos/")
+                        .path(filename)
+                        .toUriString())
                 .collect(Collectors.toList());
 
         // Crear y guardar el departamento usando las URLs de las fotos
-        DepartamentoDto departamentoDto = new DepartamentoDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, pisos, interior, ascensor, areasComunes, areasComunesEspecificas, fotoUrls);
+        DepartamentoDto departamentoDto = new DepartamentoDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, pisos, interior, ascensor, areasComunes, areasComunesEspecificas, fotoUrls, idAgente);
         agenteService.agregarDepartamento(departamentoDto);
         return ResponseEntity.ok("Departamento agregado con éxito");
     }
@@ -176,15 +222,26 @@ public class AgenteController {
             @RequestParam("ascensor") boolean ascensor,
             @RequestParam("areasComunes") boolean areasComunes,
             @RequestParam("areasComunesEspecificas") String areasComunesEspecificas,
-            @RequestParam("fotos") List<MultipartFile> fotos) {
+            @RequestParam("fotos") List<MultipartFile> fotos,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+
+        // Obtener el token JWT desde el encabezado de autorización
+        String token = authorizationHeader.substring(7); // Remueve "Bearer " del encabezado
+
+        // Obtener el ID del agente desde el token JWT
+        Long idAgente = jwtService.getIdAgenteFromToken(token);
 
         // Subir las fotos y obtener las URLs
         List<String> fotoUrls = fotos.stream()
                 .map(storageService::store)
+                .map(filename -> ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/fotos/")
+                        .path(filename)
+                        .toUriString())
                 .collect(Collectors.toList());
 
         // Crear y modificar el departamento usando las URLs de las fotos
-        DepartamentoDto departamentoDto = new DepartamentoDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, pisos, interior, ascensor, areasComunes, areasComunesEspecificas, fotoUrls);
+        DepartamentoDto departamentoDto = new DepartamentoDto(latitud, longitud, pais, region, provincia, distrito, direccion, descripcion, otrasComodidades, tipoPropiedad, areaTerreno, costoTotal, costoInicial, cochera, cantBanos, cantDormitorios, cantCochera, pisos, interior, ascensor, areasComunes, areasComunesEspecificas, fotoUrls, idAgente);
         agenteService.modificarDepartamento(id, departamentoDto);
         return ResponseEntity.ok("Departamento modificado con éxito");
     }

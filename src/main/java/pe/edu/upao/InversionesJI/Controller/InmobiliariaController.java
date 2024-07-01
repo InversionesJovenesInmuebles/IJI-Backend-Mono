@@ -28,6 +28,7 @@ public class InmobiliariaController {
         return ResponseEntity.ok(inmobiliariaService.agregarInmobiliaria(request));
     }
 
+    //Listar datos de la inmobiliaria por token
     @GetMapping("/listarInmobiliariaToken")
     public ResponseEntity<Inmobiliaria> obtenerDatosInmobiliaria(@RequestHeader("Authorization") String token) {
         String tokenSinBearer = token.replace("Bearer ", "");

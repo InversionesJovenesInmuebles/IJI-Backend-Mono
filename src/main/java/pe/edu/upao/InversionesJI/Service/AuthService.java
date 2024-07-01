@@ -37,12 +37,26 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
         System.out.println("Intento de inicio de sesión para el usuario: " + request.getCorreo());
         UserDetails userDetails = loadUserByUsername(request.getCorreo());
+        Long idAgente = null;
 
         if (userDetails != null && passwordEncoder.matches(request.getContrasena(), userDetails.getPassword())) {
             System.out.println("Autenticación exitosa para el usuario: " + request.getCorreo());
 
-            // Generar token y devolver respuesta de autenticación
-            String token = jwtService.getToken(userDetails);
+            // Verificar si el usuario es un agente y obtener el idAgente
+            Optional<Agente> agenteOptional = agenteRepository.findByUsername(request.getCorreo());
+            if (agenteOptional.isPresent()) {
+                Agente agente = agenteOptional.get();
+                idAgente = agente.getIdAgente();
+            }
+
+            // Generar token con o sin idAgente según el rol
+            String token;
+            if (idAgente != null) {
+                token = jwtService.getTokenAgente(userDetails, idAgente);
+            } else {
+                token = jwtService.getToken(userDetails);
+            }
+
             String role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
 
             return AuthResponse.builder()

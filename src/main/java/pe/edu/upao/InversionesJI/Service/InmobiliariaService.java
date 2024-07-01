@@ -49,6 +49,7 @@ public class InmobiliariaService {
                 .build();
     }
 
+    // Listar datos de la inmobiliaria por token
     public Inmobiliaria obtenerInmobiliariaPorToken(String token) {
         String correo = jwtService.getUsernameFromToken(token);
         return inmobiliariaRepository.findByUsername(correo)

@@ -16,5 +16,7 @@ public interface PropiedadFeignClient {
     @GetMapping(value = "/propiedad/listarPropiedad/{id}")
     PropiedadDto obtenerPropiedadPorId(@PathVariable("id") Long id);
 
+    @GetMapping("/propiedad/listarPropiedadesAgente/{idAgente}")
+    List<PropiedadDto> listarPropiedadesPorAgente(@PathVariable("idAgente") Long idAgente);
 }
 

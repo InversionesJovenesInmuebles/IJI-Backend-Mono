@@ -6,11 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Dto.CasaDto;
 import pe.edu.upao.InversionesJI.Dto.DepartamentoDto;
 import pe.edu.upao.InversionesJI.Dto.PropiedadDto;
+import pe.edu.upao.InversionesJI.Entity.Agente;
+import pe.edu.upao.InversionesJI.Jwt.JwtService;
 import pe.edu.upao.InversionesJI.MicroServiceEntity.Casa;
 import pe.edu.upao.InversionesJI.MicroServiceEntity.Departamento;
 import pe.edu.upao.InversionesJI.MicroServiceEntity.Foto;
 import pe.edu.upao.InversionesJI.MicroServiceEntity.Propiedad;
 import pe.edu.upao.InversionesJI.MicroServiceRepository.PropiedadRepository;
+import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +23,16 @@ import java.util.stream.Collectors;
 public class AgenteService {
 
     private final PropiedadRepository propiedadRepository;
+    private final AgenteRepository agenteRepository;
+    private final JwtService jwtService;
+
+
+    //Listar datos del agente por token
+    public Agente obtenerAgentePorToken(String token) {
+        String correo = jwtService.getUsernameFromToken(token);
+        return agenteRepository.findByUsername(correo)
+                .orElseThrow(() -> new RuntimeException("Agente no encontrado con el token proporcionado"));
+    }
 
     //Convertir la propeidad en base al tipo de propiedad
     private <T extends Propiedad> T convertirPropiedad(PropiedadDto propiedadDto, T propiedad) {
@@ -40,6 +53,7 @@ public class AgenteService {
         propiedad.setCantBanos(propiedadDto.getCantBanos());
         propiedad.setCantDormitorios(propiedadDto.getCantDormitorios());
         propiedad.setCantCochera(propiedadDto.getCantCochera());
+        propiedad.setIdAgente(propiedadDto.getIdAgente());
 
         // Asignar fotos
         List<Foto> fotos = convertirFotos(propiedadDto.getFotosUrls(), propiedad);
@@ -60,11 +74,17 @@ public class AgenteService {
                 .collect(Collectors.toList());
     }
 
+    public Long extraerIdAgenteToken(String token) {
+        String jwtToken = token.substring(7); // Remover "Bearer " del inicio del token
+        return jwtService.getIdAgenteFromToken(jwtToken);
+    }
+
     //CASA
 
     // Agregar Casa
     @Transactional("propiedadTransactionManager")
-    public void agregarCasa(CasaDto casaDto) {
+    public void agregarCasa(CasaDto casaDto, String token) {
+        Long idAgente = jwtService.getIdAgenteFromToken(token);
         Casa casa = convertirPropiedad(casaDto, new Casa());
 
         //Atributos de la propiedad casa
@@ -73,6 +93,7 @@ public class AgenteService {
         casa.setAtico(casaDto.isAtico());
         casa.setJardin(casaDto.isJardin());
         casa.setCantPisos(casaDto.getCantPisos());
+        casa.setIdAgente(idAgente);
         propiedadRepository.save(casa);
     }
 
@@ -82,12 +103,16 @@ public class AgenteService {
         Casa casa = (Casa) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Casa no encontrada con el ID: " + id));
 
+        //Convierte y actualiza los campos de Propiedad
+        convertirPropiedad(casaDto, casa);
+
         // Atributos específicos de Casa
         casa.setSotano(casaDto.isSotano());
         casa.setAreaJardin(casaDto.getAreaJardin());
         casa.setAtico(casaDto.isAtico());
         casa.setJardin(casaDto.isJardin());
         casa.setCantPisos(casaDto.getCantPisos());
+        casa.setIdAgente(casaDto.getIdAgente());
         propiedadRepository.save(casa);
     }
 
@@ -112,6 +137,7 @@ public class AgenteService {
         departamento.setAscensor(departamentoDto.isAscensor());
         departamento.setAreasComunes(departamentoDto.isAreasComunes());
         departamento.setAreasComunesEspecificas(departamentoDto.getAreasComunesEspecificas());
+        departamento.setIdAgente(departamento.getIdAgente());
         propiedadRepository.save(departamento);
     }
 
@@ -121,12 +147,16 @@ public class AgenteService {
         Departamento departamento = (Departamento) propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departamento no encontrado con el ID: " + id));
 
+        //Convierte y actualiza los campos de Propiedad
+        convertirPropiedad(departamentoDto, departamento);
+
         // Atributos específicos de Departamento
         departamento.setPisos(departamentoDto.getPisos());
         departamento.setInterior(departamentoDto.getInterior());
         departamento.setAscensor(departamentoDto.isAscensor());
         departamento.setAreasComunes(departamentoDto.isAreasComunes());
         departamento.setAreasComunesEspecificas(departamentoDto.getAreasComunesEspecificas());
+        departamento.setIdAgente(departamento.getIdAgente());
         propiedadRepository.save(departamento);
     }
 
