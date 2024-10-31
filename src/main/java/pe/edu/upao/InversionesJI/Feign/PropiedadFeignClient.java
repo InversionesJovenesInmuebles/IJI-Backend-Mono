@@ -19,4 +19,3 @@ public interface PropiedadFeignClient {
     @GetMapping("/propiedad/listarPropiedadesAgente/{idAgente}")
     List<PropiedadDto> listarPropiedadesPorAgente(@PathVariable("idAgente") Long idAgente);
 }
-

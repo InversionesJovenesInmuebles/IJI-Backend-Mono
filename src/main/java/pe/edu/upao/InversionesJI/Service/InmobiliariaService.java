@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
+import pe.edu.upao.InversionesJI.Exception.CorreoYaRegistradoException;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
 import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
@@ -79,11 +80,17 @@ public class InmobiliariaService {
     public AuthResponse agregarAgente(RegisterAgenteRequest request) {
         System.out.println("Solicitud para agregar agentes recibida: " + request);
 
+        // Verificar si el correo ya está registrado en la base de datos
+        Optional<Agente> existingAgente = agenteRepository.findByUsername(request.getCorreo());
+        if (existingAgente.isPresent()) {
+            throw new CorreoYaRegistradoException("El correo ya está registrado");
+        }
+
         // Buscar la inmobiliaria por nombre
-        Inmobiliaria inmobiliaria;
-        inmobiliaria = inmobiliariaRepository.findByNombreInmobiliaria(request.getNombreInmobiliaria())
+        Inmobiliaria inmobiliaria = inmobiliariaRepository.findByNombreInmobiliaria(request.getNombreInmobiliaria())
                 .orElseThrow(() -> new UsernameNotFoundException("Inmobiliaria no encontrada"));
 
+        // Crear el nuevo agente
         Agente agente = new Agente();
         agente.setNombre(request.getNombre());
         agente.setApellido(request.getApellido());

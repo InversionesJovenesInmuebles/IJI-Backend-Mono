@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
+import pe.edu.upao.InversionesJI.Exception.ContrasenaIncorrectaException;
+import pe.edu.upao.InversionesJI.Exception.CorreoNoRegistradoException;
+import pe.edu.upao.InversionesJI.Exception.CorreoYaRegistradoException;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
 import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.ClienteRepository;
@@ -36,36 +39,37 @@ public class AuthService {
     @Transactional("monolitoTransactionManager")
     public AuthResponse login(LoginRequest request) {
         System.out.println("Intento de inicio de sesión para el usuario: " + request.getCorreo());
-        UserDetails userDetails = loadUserByUsername(request.getCorreo());
+
+        // Verificar si el correo está registrado
+        UserDetails userDetails;
+        try {
+            userDetails = loadUserByUsername(request.getCorreo());
+        } catch (UsernameNotFoundException e) {
+            throw new CorreoNoRegistradoException("Correo no registrado");
+        }
+
+        // Verificar la contraseña
+        if (!passwordEncoder.matches(request.getContrasena(), userDetails.getPassword())) {
+            throw new ContrasenaIncorrectaException("Contraseña Incorrecta");
+        }
+
         Long idAgente = null;
 
-        if (userDetails != null && passwordEncoder.matches(request.getContrasena(), userDetails.getPassword())) {
-            System.out.println("Autenticación exitosa para el usuario: " + request.getCorreo());
-
-            // Verificar si el usuario es un agente y obtener el idAgente
-            Optional<Agente> agenteOptional = agenteRepository.findByUsername(request.getCorreo());
-            if (agenteOptional.isPresent()) {
-                Agente agente = agenteOptional.get();
-                idAgente = agente.getIdAgente();
-            }
-
-            // Generar token con o sin idAgente según el rol
-            String token;
-            if (idAgente != null) {
-                token = jwtService.getTokenAgente(userDetails, idAgente);
-            } else {
-                token = jwtService.getToken(userDetails);
-            }
-
-            String role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
-
-            return AuthResponse.builder()
-                    .token(token)
-                    .role(role)
-                    .build();
-        } else {
-            throw new BadCredentialsException("Credenciales incorrectas para el usuario: " + request.getCorreo());
+        // Obtener el idAgente si el usuario es un agente
+        Optional<Agente> agenteOptional = agenteRepository.findByUsername(request.getCorreo());
+        if (agenteOptional.isPresent()) {
+            Agente agente = agenteOptional.get();
+            idAgente = agente.getIdAgente();
         }
+
+        // Generar token
+        String token = (idAgente != null) ? jwtService.getTokenAgente(userDetails, idAgente) : jwtService.getToken(userDetails);
+        String role = userDetails.getAuthorities().stream().findFirst().get().getAuthority();
+
+        return AuthResponse.builder()
+                .token(token)
+                .role(role)
+                .build();
     }
 
     public UserDetails loadUserByUsername(String correo) {
@@ -91,7 +95,15 @@ public class AuthService {
 
     //Método para registar al cliente
     @Transactional("monolitoTransactionManager")
-    public AuthResponse registerCliente(RegisterClienteRequest request){
+    public AuthResponse registerCliente(RegisterClienteRequest request) {
+        // Verificar si el correo ya está registrado
+        Optional<Cliente> existingCliente = clienteRepository.findByUsername(request.getCorreo());
+
+        if (existingCliente.isPresent()) {
+            throw new CorreoYaRegistradoException("El correo ya está registrado");
+        }
+
+        // Registrar al cliente si el correo no está registrado
         Cliente cliente = new Cliente();
         cliente.setUsername(request.getCorreo());
         cliente.setPassword(passwordEncoder.encode(request.getContrasena()));
