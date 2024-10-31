@@ -28,7 +28,7 @@ public class PropiedadDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.propiedad.datasource")
     public DataSource propiedadDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5433/PropiedadService");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/PropiedadService");
         dataSource.setUsername("postgres");
         dataSource.setPassword("admin");
         dataSource.setDriverClassName("org.postgresql.Driver");

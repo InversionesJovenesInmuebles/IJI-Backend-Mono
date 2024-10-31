@@ -30,7 +30,7 @@ public class MonolitoDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.monolito.datasource")
     public DataSource monolitoDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5433/InversionesJI");
+        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/InversionesJI");
         dataSource.setUsername("postgres");
         dataSource.setPassword("admin");
         dataSource.setDriverClassName("org.postgresql.Driver");

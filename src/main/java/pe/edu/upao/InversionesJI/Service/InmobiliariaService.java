@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pe.edu.upao.InversionesJI.Entity.Agente;
 import pe.edu.upao.InversionesJI.Entity.Inmobiliaria;
 import pe.edu.upao.InversionesJI.Exception.CorreoYaRegistradoException;
+import pe.edu.upao.InversionesJI.Exception.DatosAsociadosException;
 import pe.edu.upao.InversionesJI.Jwt.JwtService;
+import pe.edu.upao.InversionesJI.MicroServiceRepository.PropiedadRepository;
 import pe.edu.upao.InversionesJI.Repository.AgenteRepository;
 import pe.edu.upao.InversionesJI.Repository.InmobiliariaRepository;
 import pe.edu.upao.InversionesJI.Request.RegisterAgenteRequest;
@@ -25,6 +27,7 @@ import java.util.Optional;
 public class InmobiliariaService {
 
     private final InmobiliariaRepository inmobiliariaRepository;
+    private final PropiedadRepository propiedadRepository;
     private final AgenteRepository agenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -117,6 +120,13 @@ public class InmobiliariaService {
         Agente agente = agenteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Agente no encontrado con el ID: " + id));
 
+        // Verificar si el correo ya está registrado en otro agente
+        Optional<Agente> existingAgente = agenteRepository.findByUsername(request.getCorreo());
+        if (existingAgente.isPresent() && !existingAgente.get().getIdAgente().equals(id)) {
+            throw new CorreoYaRegistradoException("El correo ya está registrado");
+        }
+
+        // Actualizar los datos del agente
         agente.setNombre(request.getNombre());
         agente.setApellido(request.getApellido());
         agente.setUsername(request.getCorreo());
@@ -138,6 +148,12 @@ public class InmobiliariaService {
         Optional<Agente> agenteOptional = agenteRepository.findById(id);
         if (agenteOptional.isPresent()) {
             Agente agente = agenteOptional.get();
+            // Verificar si el agente tiene propiedades activas
+            boolean tienePropiedades = propiedadRepository.existsByIdAgente(agente.getIdAgente());
+            if (tienePropiedades) {
+                throw new DatosAsociadosException("El agente tiene datos asociados (propiedades activas) y no puede ser eliminado sin reasignación.");
+            }
+            // Si no tiene propiedades, proceder con la eliminación
             agenteRepository.delete(agente);
             return ResponseEntity.status(HttpStatus.OK).body("Agente eliminado");
         } else {

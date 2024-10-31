@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PropiedadRepository extends JpaRepository<Propiedad, Long> {
     Optional<Propiedad> findById(Long id);
+    boolean existsByIdAgente(Long idAgente);
 }
