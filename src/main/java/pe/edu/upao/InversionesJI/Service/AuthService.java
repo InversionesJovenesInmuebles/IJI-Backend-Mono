@@ -93,15 +93,20 @@ public class AuthService {
         throw new UsernameNotFoundException("Usuario no encontrado con correo: " + correo);
     }
 
+    // Método para verificar si el correo ya está registrado en cualquiera de los roles
+    private void verificarCorreoUnico(String correo) {
+        boolean correoRegistrado = clienteRepository.findByUsername(correo).isPresent() ||
+                agenteRepository.findByUsername(correo).isPresent() ||
+                inmobiliariaRepository.findByUsername(correo).isPresent();
+
+        if (correoRegistrado) {
+            throw new CorreoYaRegistradoException("El correo ya está registrado");
+        }
+    }
+
     //Método para registar al cliente
     @Transactional("monolitoTransactionManager")
     public AuthResponse registerCliente(RegisterClienteRequest request) {
-        // Verificar si el correo ya está registrado
-        Optional<Cliente> existingCliente = clienteRepository.findByUsername(request.getCorreo());
-
-        if (existingCliente.isPresent()) {
-            throw new CorreoYaRegistradoException("El correo ya está registrado");
-        }
 
         // Registrar al cliente si el correo no está registrado
         Cliente cliente = new Cliente();
