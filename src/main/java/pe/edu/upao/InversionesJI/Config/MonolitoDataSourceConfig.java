@@ -30,10 +30,9 @@ public class MonolitoDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.monolito.datasource")
     public DataSource monolitoDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/InversionesJI");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("admin");
-        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setJdbcUrl("jdbc:mysql://bxqkpbs0ziyxwv89n3r7-mysql.services.clever-cloud.com:3306/bxqkpbs0ziyxwv89n3r7");
+        dataSource.setUsername("ukysxowvlxebykea");
+        dataSource.setPassword("xPlBSnvWiIr2Re14rxB3");
         return dataSource;
     }
 

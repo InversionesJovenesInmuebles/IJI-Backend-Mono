@@ -39,5 +39,10 @@
       "name": "spring.propiedad.datasource.driver-class-name",
       "type": "java.lang.String",
       "description": "Description for spring.propiedad.datasource.driver-class-name."
+    },
+    {
+      "name": "spring.flyway.driver",
+      "type": "java.lang.String",
+      "description": "Description for spring.flyway.driver."
     }
   ] }

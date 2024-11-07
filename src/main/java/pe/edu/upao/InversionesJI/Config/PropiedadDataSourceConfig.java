@@ -28,10 +28,9 @@ public class PropiedadDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.propiedad.datasource")
     public DataSource propiedadDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/PropiedadService");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("admin");
-        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setJdbcUrl("jdbc:mysql://biuamaqowgbjqltsltav-mysql.services.clever-cloud.com:3306/biuamaqowgbjqltsltav");
+        dataSource.setUsername("ugktfd3y2xt2rhnx");
+        dataSource.setPassword("v3Jme9F2sZ0ivZcjMSbF");
         return dataSource;
     }
 
@@ -52,3 +51,4 @@ public class PropiedadDataSourceConfig {
         return new JpaTransactionManager(propiedadEntityManagerFactory);
     }
 }
+
