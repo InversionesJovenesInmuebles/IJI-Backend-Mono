@@ -94,7 +94,7 @@ public class AuthService {
     }
 
     // Método para verificar si el correo ya está registrado en cualquiera de los roles
-    private void verificarCorreoUnico(String correo) {
+    public void verificarCorreoUnico(String correo) {
         boolean correoRegistrado = clienteRepository.findByUsername(correo).isPresent() ||
                 agenteRepository.findByUsername(correo).isPresent() ||
                 inmobiliariaRepository.findByUsername(correo).isPresent();
@@ -107,6 +107,9 @@ public class AuthService {
     //Método para registar al cliente
     @Transactional("monolitoTransactionManager")
     public AuthResponse registerCliente(RegisterClienteRequest request) {
+
+        // Verificar que el correo no esté registrado en ningún rol
+        verificarCorreoUnico(request.getCorreo());
 
         // Registrar al cliente si el correo no está registrado
         Cliente cliente = new Cliente();

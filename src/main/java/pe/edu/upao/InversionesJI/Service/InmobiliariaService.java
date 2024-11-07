@@ -31,10 +31,15 @@ public class InmobiliariaService {
     private final AgenteRepository agenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthService authService;
 
     //Agregar Inmobiliaria
     @Transactional("monolitoTransactionManager")
     public AuthResponse agregarInmobiliaria(RegisterInmobiliariaRequest request) {
+
+        // Verificar que el correo no esté registrado en ningún rol
+        authService.verificarCorreoUnico(request.getCorreo());
+
         System.out.println("Solicitud para agregar inmobiliaria recibida: " + request);
         Inmobiliaria inmobiliaria = new Inmobiliaria();
         inmobiliaria.setNombreInmobiliaria(request.getNombreInmobiliaria());
@@ -82,6 +87,9 @@ public class InmobiliariaService {
     @Transactional("monolitoTransactionManager")
     public AuthResponse agregarAgente(RegisterAgenteRequest request) {
         System.out.println("Solicitud para agregar agentes recibida: " + request);
+
+        // Verificar que el correo no esté registrado en ningún rol
+        authService.verificarCorreoUnico(request.getCorreo());
 
         // Verificar si el correo ya está registrado en la base de datos
         Optional<Agente> existingAgente = agenteRepository.findByUsername(request.getCorreo());
